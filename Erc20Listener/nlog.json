@@ -1,0 +1,101 @@
+{
+  "NLog": {
+    "autoReload": true,
+    "throwConfigExceptions": true,
+    "internalLogLevel": "Off",
+    "rules": [
+      {
+        "logger": "Microsoft.*",
+        "finalMinLevel": "Warning",
+        "writeTo": "ConsoleTarget"
+      },
+      {
+        "logger": "System.*",
+        "finalMinLevel": "Warning",
+        "writeTo": "ConsoleTarget"
+      },
+      {
+        "logger": "Microsoft.Hosting.Lifetime",
+        "finalMinLevel": "Information",
+        "writeTo": "ConsoleTarget"
+      },
+      {
+        "logger": "*",
+        "minLevel": "Trace",
+        "writeTo": "ConsoleTarget"
+      }
+    ],
+    "targets": {
+      "async": true,
+      "ConsoleTarget": {
+        "type": "ColoredConsole",
+        "layout": {
+          "type": "JsonLayout",
+          "suppressSpaces": true,
+          "renderEmptyObject": false,
+          "Attributes": [
+            {
+              "name": "time",
+              "layout": "${date:format=yyyy-MM-ddTHH\\:mm\\:ss.fff}"
+            },
+            {
+              "name": "level",
+              "layout": "${uppercase:${level}}"
+            },
+            {
+              "name": "logger",
+              "layout": "${logger}"
+            },
+            {
+              "name": "logEventId",
+              "layout": "${event-properties:EventId}"
+            },
+            {
+              "name": "logEventName",
+              "layout": "${event-properties:EventName}"
+            },
+            {
+              "name": "method",
+              "layout": "${callsite:className=False:fileName=False:includeSourcePath=False:methodName=True}"
+            },
+            {
+              "name": "message",
+              "layout": "${message}"
+            },
+            {
+              "name": "logId",
+              "layout": "${guid:GeneratedFromLogEvent=true}"
+            },
+            {
+              "name": "exception",
+              "layout": "${exception:format=tostring}"
+            }
+          ]
+        },
+        "rowHighlightingRules": [
+          {
+            "condition": "level == LogLevel.Debug",
+            "foregroundColor": "Gray"
+          },
+          {
+            "condition": "level == LogLevel.Info",
+            "foregroundColor": "Green"
+          },
+          {
+            "condition": "level == LogLevel.Warn",
+            "foregroundColor": "Yellow"
+          },
+          {
+            "condition": "level == LogLevel.Error",
+            "foregroundColor": "Red"
+          },
+          {
+            "condition": "level == LogLevel.Fatal",
+            "foregroundColor": "Red",
+            "backgroundColor": "White"
+          }
+        ]
+      }
+    }
+  }
+}
