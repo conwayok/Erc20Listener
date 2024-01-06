@@ -8,23 +8,23 @@ public class Worker(ILogger<Worker> logger, IOptions<AppSettings> options, IServ
 {
     private async Task RunLoop(string network, TimeSpan pollInterval, CancellationToken cancellationToken)
     {
-        try
+        logger.LogInformation("start listen loop for network {Network}, poll interval = {PollInterval}", network,
+            pollInterval);
+
+        using var periodicTimer = new PeriodicTimer(pollInterval);
+
+        while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
         {
-            logger.LogInformation("start listen loop for network {Network}, poll interval = {PollInterval}", network,
-                pollInterval);
-
-            using var periodicTimer = new PeriodicTimer(pollInterval);
-
-            while (await periodicTimer.WaitForNextTickAsync(cancellationToken))
+            try
             {
                 using var serviceScope = serviceScopeFactory.CreateScope();
                 var erc20EventsFetcher = serviceScope.ServiceProvider.GetRequiredService<IErc20EventsFetcher>();
                 await erc20EventsFetcher.Fetch(network);
             }
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "poll error");
+            catch (Exception e)
+            {
+                logger.LogError(e, "poll error");
+            }
         }
     }
 
