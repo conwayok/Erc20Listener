@@ -17,8 +17,8 @@ builder.Logging.SetMinimumLevel(LogLevel.Trace);
 builder.Host.UseNLog();
 
 builder.Services.AddOptions<AppSettings>().Bind(builder.Configuration);
+builder.Services.AddHttpClient();
 builder.Services.AddTransient<IWeb3Factory, Web3Factory>();
-builder.Services.AddHttpClient<IWeb3Factory, Web3Factory>();
 builder.Services.AddTransient<IBlockchainProxy, BlockchainProxy>();
 builder.Services.AddTransient<IQueryProgressManager, QueryProgressManager>();
 builder.Services.AddTransient<IErc20EventsFetcher, Erc20EventsFetcher>();
